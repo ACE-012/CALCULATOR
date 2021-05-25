@@ -27,7 +27,7 @@ class GUI(threading.Thread):
         self.mainwindow = Toplevel(self.root_instance)
         self.mainwindow.wm_maxsize(520,480)
         self.mainwindow.protocol("WM_DELETE_WINDOW", self.close_window)
-        Entry(self.mainwindow,textvariable=self.eqvar,justify='right').pack()
+        Entry(self.mainwindow,textvariable=self.eqvar,justify='right',width=50).pack()
         self._buttons()
     def _buttons(self):
         self.buttons_Frame = Frame(self.mainwindow)
@@ -69,6 +69,18 @@ class GUI(threading.Thread):
                     height=1, width=3,
                     bd='5',
                     command=lambda c="=": self._button_command(c)).grid(row=0,column=1)
+        Button(self.buttons_Frame_operators_right,
+            text="(",
+                    font= font.Font(family='Helvetica', size=30),
+                    height=1, width=3,
+                    bd='5',
+                    command=lambda c="(": self._button_command(c)).grid(row=1,column=1)
+        Button(self.buttons_Frame_operators_right,
+            text=")",
+                    font= font.Font(family='Helvetica', size=30),
+                    height=1, width=3,
+                    bd='5',
+                    command=lambda c=")": self._button_command(c)).grid(row=2,column=1)
         self.buttons_Frame_operators_right.pack(padx=5,pady=10,side=LEFT)
     def _button_command(self,val):
         if val=="C":
