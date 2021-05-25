@@ -2,7 +2,6 @@ from tkinter import *
 import threading
 from tkinter import font
 import calculator
-#
 class GUI(threading.Thread):
     def __init__(self):
         super().__init__()
