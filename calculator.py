@@ -19,8 +19,8 @@ class calculator(threading.Thread):
             args1 *= arg
         return args1
 
-    def devide(self, a, b):
-        return a/b
+    def divide(self, a, b):
+        return a/b if b!=0 else "Math Error"
 
     def rec(self, eq: str):
         # print(eq)
@@ -29,19 +29,25 @@ class calculator(threading.Thread):
             try:
                 bracend = eq.rindex(')')
             except:
-                print("Syntax Error")
-            if eq[:brac] != "":
-                if eq[brac-1].isnumeric():
-                    return self.rec(eq[:brac]+"*"+self.rec(eq[brac+1:bracend])+eq[bracend+1:])
-                else:
-                    if eq[brac-1] == '-':
-                        return self.rec(eq[:brac-1]+"+(-1*"+self.rec(eq[brac+1:bracend])+")"+eq[bracend+1:])
+                eq="Syntax Error"
+            if eq!="Syntax Error":
+                # print("SE")
+                if eq[:brac] != "":
+                    if eq[brac-1].isnumeric():
+                        return self.rec(eq[:brac]+"*"+self.rec(eq[brac+1:bracend])+eq[bracend+1:])
                     else:
-                        return self.rec(eq[:brac]+self.rec(eq[brac+1:bracend])+eq[bracend+1:])
-            else:
-                return self.rec(self.rec(eq[brac+1:bracend])+eq[bracend+1:])
+                        if eq[brac-1] == '-':
+                            return self.rec(eq[:brac-1]+"+(-1*"+self.rec(eq[brac+1:bracend])+")"+eq[bracend+1:])
+                        else:
+                            return self.rec(eq[:brac]+self.rec(eq[brac+1:bracend])+eq[bracend+1:])
+                else:
+                    return self.rec(self.rec(eq[brac+1:bracend])+eq[bracend+1:])
         except:
-            pass
+            try:
+                bracend = eq.rindex(')')
+                eq="Syntax Error"
+            except:
+                pass
         try:
             divindex = eq.index('/')
             i = divindex-1
@@ -81,8 +87,9 @@ class calculator(threading.Thread):
                     break
                 i += 1
             tempstr = _1stno+"/"+_2ndno
+            # print(str(self.divide(float(_1stno), float(_2ndno))))
             eq = self.rec(
-                str(eq.replace(tempstr, str(self.devide(float(_1stno), float(_2ndno))))))
+                str(eq.replace(tempstr, str(self.divide(float(_1stno), float(_2ndno))))))
         except:
             pass
         try:
@@ -129,8 +136,9 @@ class calculator(threading.Thread):
                 str(eq.replace(tempstr, str(self.multi(float(_1stno), float(_2ndno))))))
         except:
             pass
-        s = [float(s) for s in re.findall(r'-?\d+\.?\d*', eq)]
-        eq = str(self.add(*s))
+        if eq!="Math Error" and eq!="Syntax Error":
+            s = [float(s) for s in re.findall(r'-?\d+\.?\d*', eq)]
+            eq = str(self.add(*s))
         return eq
 
     def run(self):

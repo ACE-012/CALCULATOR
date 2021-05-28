@@ -9,7 +9,10 @@ class GUI(threading.Thread):
         self.root_instance.geometry("0x0")
         self.root_instance.overrideredirect(1)
         self.mainwindow = None
+        self.questionbar=None
+        self.answerbar=None
         self.eqvar=StringVar()
+        self.ansvar=StringVar()
         self.eqvar.trace("w", lambda name, index, mode,
                              sv=self.eqvar: self._eq(sv.get()))
         self._mainwindow()
@@ -25,12 +28,18 @@ class GUI(threading.Thread):
                 self.eqvar.set(eq)
     def _mainwindow(self):
         self.mainwindow = Toplevel(self.root_instance)
+        self.mainwindow.wm_title("CALCULATOR")
         self.mainwindow.wm_maxsize(520,480)
         self.mainwindow.protocol("WM_DELETE_WINDOW", self.close_window)
-        Entry(self.mainwindow,textvariable=self.eqvar,justify='right',width=50).pack()
+        self.questionbar=Entry(self.mainwindow,textvariable=self.eqvar,justify='right',width=50)
+        self.questionbar.pack()
+        self.answerbar=Entry(self.mainwindow,textvariable=self.ansvar,justify='right',width=50)
+        self.answerbar.pack()
+        self.answerbar.configure(state='disabled')
         self._buttons()
     def _buttons(self):
         self.buttons_Frame = Frame(self.mainwindow)
+        myfont=font.Font(family='Helvetica', size=30)
         i = 0
         j = 0
         for k in range(12):
@@ -39,7 +48,7 @@ class GUI(threading.Thread):
                 Button(
                     self.buttons_Frame,
                     text=text,
-                    font= font.Font(family='Helvetica', size=30),
+                    font= myfont,
                     height=1, width=3,
                     bd='5',
                     command=lambda c=text: self._button_command(c)).grid(row=j, column=i)
@@ -59,25 +68,25 @@ class GUI(threading.Thread):
             text="+"if i==0 else "-" if i==1 else "/" if i==2 else "*"
             Button(self.buttons_Frame_operators_right,
             text=text,
-                    font= font.Font(family='Helvetica', size=30),
+                    font= myfont,
                     height=1, width=3,
                     bd='5',
                     command=lambda c=text: self._button_command(c)).grid(row=i,column=0)
         Button(self.buttons_Frame_operators_right,
             text="=",
-                    font= font.Font(family='Helvetica', size=30),
+                    font= myfont,
                     height=1, width=3,
                     bd='5',
                     command=lambda c="=": self._button_command(c)).grid(row=0,column=1)
         Button(self.buttons_Frame_operators_right,
             text="(",
-                    font= font.Font(family='Helvetica', size=30),
+                    font= myfont,
                     height=1, width=3,
                     bd='5',
                     command=lambda c="(": self._button_command(c)).grid(row=1,column=1)
         Button(self.buttons_Frame_operators_right,
             text=")",
-                    font= font.Font(family='Helvetica', size=30),
+                    font= myfont,
                     height=1, width=3,
                     bd='5',
                     command=lambda c=")": self._button_command(c)).grid(row=2,column=1)
@@ -86,7 +95,8 @@ class GUI(threading.Thread):
         if val=="C":
             self.eqvar.set(self.eqvar.get()[:-1])
         elif val=="=":
-            self.eqvar.set(calculator.calculator(self.eqvar.get()).run())
+            self.ansvar.set(calculator.calculator(self.eqvar.get()).run())
+            # print(self.ansvar.get())
             self.equals=True
         else:
             if self.equals==True:
